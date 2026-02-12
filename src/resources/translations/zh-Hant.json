@@ -1,0 +1,13 @@
+{
+  "k4.general.prefix": "{silver}[{lime}BombWires{silver}]",
+  "k4.menu.title": "選擇電線顏色",
+  "k4.menu.helper_t": "若雙方選擇相同顏色將立即拆除。忽略此選單則隨機選擇顏色。",
+  "k4.menu.helper_ct": "若雙方選擇相同顏色將立即拆除。忽略此選單則進行一般拆除。",
+  "k4.menu.red": "紅色",
+  "k4.menu.blue": "藍色",
+  "k4.menu.yellow": "黃色",
+  "k4.menu.green": "綠色",
+  "k4.chat.success": "{0} {lime}剪斷了 {1} {lime}線，答案正確！炸彈已立即拆除。",
+  "k4.chat.failure": "{0} {lightred}剪斷了 {1} {lightred}線，答案錯誤！炸彈爆炸了。",
+  "k4.chat.select": "{silver}你選擇了 {0} {silver}線。"
+}
