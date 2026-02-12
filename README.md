@@ -12,7 +12,7 @@
 <div align="center">
   <h1 align="center">KitsuneLab©</h1>
   <h3 align="center">K4-BombWires</h3>
-  <a align="center">A bomb defuse minigame for Counter-Strike 2 using SwiftlyS2 framework. Terrorists select a wire color when planting, and CTs must guess correctly to instant defuse or the bomb explodes!</a>
+  <a align="center">A bomb defuse minigame for Counter-Strike 2 using <del>SwiftlyS2</del> CounterStrikeSharp framework. Terrorists select a wire color when planting, and CTs must guess correctly to instant defuse or the bomb explodes!</a>
 
   <p align="center">
     <br />
@@ -37,7 +37,9 @@ I create free, open-source projects for the community. While not required, donat
 
 To use this server addon, you'll need the following dependencies installed:
 
-- [**SwiftlyS2**](https://github.com/swiftly-solution/swiftlys2): SwiftlyS2 is a server plugin framework for Counter-Strike 2
+- ~~[**SwiftlyS2**](https://github.com/swiftly-solution/swiftlys2): SwiftlyS2 is a server plugin framework for Counter-Strike 2~~
+- [**CounterStrikeSharp**](https://github.com/roflmuffin/CounterStrikeSharp/releases): CounterStrikeSharp allows you to write server plugins in C# for Counter-Strike 2/Source2/CS2.
+- [**CS2MenuManager**](https://github.com/schwarper/CS2MenuManager)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -45,10 +47,12 @@ To use this server addon, you'll need the following dependencies installed:
 
 ## Installation
 
-1. Install [SwiftlyS2](https://github.com/swiftly-solution/swiftlys2) on your server
-2. [Download the latest release](https://github.com/K4ryuu/K4-BombWires-SwiftlyS2/releases/latest)
-3. Extract to your server's `swiftlys2/plugins/` directory
-4. Configure `config.json` in the plugin folder (optional)
+1. Install [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp/releases) on your server
+2. Install [CS2MenuManager](https://github.com/schwarper/CS2MenuManager/releases) on your server
+3. [Download the latest release](https://github.com/rogeraabbccdd/K4-BombWires/releases/latest)
+4. Extract to your server's `counterstrikesharp/plugins/` directory
+5. Configure `counterstrikesharp/configs/plugins/K4-BombWires/K4-BombWires.json` (optional)
+6. Edit `counterstrikesharp/shared/CS2MenuManager/config.toml`, set `ForceConfigSettings = false` (optional)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -88,7 +92,8 @@ To use this server addon, you'll need the following dependencies installed:
 ```json
 {
   "K4BombWires": {
-    "MenuTimeout": 5
+    "MenuTimeout": 5,
+    "RandomizeWireOrder": false
   }
 }
 ```
@@ -96,6 +101,7 @@ To use this server addon, you'll need the following dependencies installed:
 | Option        | Description                          | Default |
 | ------------- | ------------------------------------ | ------- |
 | `MenuTimeout` | Seconds before wire menu auto-closes | `5`     |
+| `RandomizeWireOrder` | If enabled, the order of wire colors in the menu will be randomized. | `false`     |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
