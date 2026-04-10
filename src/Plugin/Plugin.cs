@@ -111,8 +111,7 @@ public class Plugin : BasePlugin, IPluginConfig<Config>
 	private HookResult OnBombPlanted(EventBombPlanted @event, GameEventInfo info)
 	{
 		CCSPlayerController? player = @event.Userid;
-		if (player?.IsValid != true || player.IsBot)
-			return HookResult.Continue;
+		if (player != null)	ClearMenuIfValidPlayer(player);
 
 		// If T didn't select a wire, pick random
 		if (_currentWire == WireColor.Max)
