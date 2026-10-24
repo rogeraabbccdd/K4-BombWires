@@ -100,7 +100,7 @@ public class Plugin : BasePlugin, IPluginConfig<Config>
 	{
 		if (_currentWire != WireColor.Max)
 		{
-			foreach (var p in Utilities.GetPlayers().Where(x => x.IsValid))
+			foreach (var p in Utilities.GetPlayers().Where(x => x.IsValid && !x.IsBot))
 			{
 				string correctWireName = GetWireTranslation(_currentWire, p);
 				p.PrintToChat($"{Localizer.ForPlayer(p, "k4.general.prefix")} {Localizer.ForPlayer(p, "k4.chat.round_end", correctWireName)}");
@@ -130,7 +130,7 @@ public class Plugin : BasePlugin, IPluginConfig<Config>
 		if (_currentWire == WireColor.Max)
 		{
 			_currentWire = (WireColor)Random.Shared.Next(0, (int)WireColor.Max);
-			if (player != null)
+			if (player?.IsValid == true && !player.IsBot)
 			{
 				string wireName = GetWireTranslation(_currentWire, player);
 				player.PrintToChat($"{Localizer.ForPlayer(player, "k4.general.prefix")} {Localizer.ForPlayer(player, "k4.chat.random", wireName)}");
@@ -232,25 +232,26 @@ public class Plugin : BasePlugin, IPluginConfig<Config>
 			if (_currentWire == selectedWire)
 			{
 				// Correct! Instant defuse
-				foreach (var p in Utilities.GetPlayers().Where(x => x.IsValid))
+				bomb.DefuseCountDown = 0;
+
+				foreach (var p in Utilities.GetPlayers().Where(x => x.IsValid && !x.IsBot))
 				{
 					string wireName = GetWireTranslation(selectedWire, p);
 					string correctWireName = GetWireTranslation(_currentWire, p);
 					p.PrintToChat($"{Localizer.ForPlayer(p, "k4.general.prefix")} {Localizer.ForPlayer(p, "k4.chat.success", playerName, wireName, correctWireName)}");
 				}
-
-				bomb.DefuseCountDown = 0;
 			}
 			else
 			{
 				// Wrong! Instant explosion
-				foreach (var p in Utilities.GetPlayers().Where(x => x.IsValid))
+				bomb.C4Blow = 1.0f;
+
+				foreach (var p in Utilities.GetPlayers().Where(x => x.IsValid && !x.IsBot))
 				{
 					string wireName = GetWireTranslation(selectedWire, p);
 					string correctWireName = GetWireTranslation(_currentWire, p);
 					p.PrintToChat($"{Localizer.ForPlayer(p, "k4.general.prefix")} {Localizer.ForPlayer(p, "k4.chat.failure", playerName, wireName, correctWireName)}");
 				}
-				bomb.C4Blow = 1.0f;
 			}
 
 			_currentWire = WireColor.Max;

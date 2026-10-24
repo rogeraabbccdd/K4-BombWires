@@ -15,6 +15,7 @@
 ### Fixed
 
 - Menu closing early when it was reopened before the previous timeout ended
+- Bomb not defusing or exploding after a CT's pick when bots were on the server
 
 ## [1.0.1]
 
