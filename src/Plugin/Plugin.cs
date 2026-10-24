@@ -3,8 +3,6 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Utils;
-using CS2MenuManager.API.Menu;
-using CS2MenuManager.API.Class;
 using CounterStrikeSharp.API.Modules.Config;
 
 namespace K4BombWires;
@@ -21,7 +19,7 @@ public enum WireColor
 public class Config : BasePluginConfig
 {
 	[JsonPropertyName("ConfigVersion")]
-	public override int Version { get; set; } = 1;
+	public override int Version { get; set; } = 2;
 
 	[JsonPropertyName("MenuTimeout")]
 	/// <summary>
@@ -34,28 +32,35 @@ public class Config : BasePluginConfig
 	/// If enabled, the order of wire colors in the menu will be randomized.
 	/// </summary>
 	public bool RandomizeWireOrder { get; set; } = false;
+
+	[JsonPropertyName("PanoramaLayout")]
+	/// <summary>
+	/// Panel layout in the workshop addon. Empty = no panel, wires can still be picked with W/A/S/D.
+	/// </summary>
+	public string PanoramaLayout { get; set; } = "panorama/layout/custom_game/bombwires.xml";
 }
 
 public class Plugin : BasePlugin, IPluginConfig<Config>
 {
 	public override string ModuleName => "K4 - Bomb Wires";
-	public override string ModuleVersion => "1.0.1";
+	public override string ModuleVersion => "1.1.0";
 	public override string ModuleAuthor => "K4ryuu";
 	public override string ModuleDescription => "A bomb defuse minigame where CT optionally can guess the correct wire color set by T.";
 
 	public Config Config { get; set; } = new ();
 	
 	private WireColor _currentWire = WireColor.Max;
-	private BaseMenu? _wireMenu;
+	private WirePanel? _wirePanel;
 
 	public override void Load(bool hotReload)
 	{
+		_wirePanel = new WirePanel(this);
 		RegisterEventHandlers();
 	}
 
 	public override void Unload(bool hotReload)
 	{
-		// Nothing to clean up
+		_wirePanel?.Destroy();
 	}
 
 	public void OnConfigParsed(Config config)
@@ -86,14 +91,7 @@ public class Plugin : BasePlugin, IPluginConfig<Config>
 	private HookResult OnRoundPrestart(EventRoundPrestart @event, GameEventInfo info)
 	{
 		// Close wire menus for all players when round ends
-		if (_wireMenu != null)
-		{
-			foreach (var p in Utilities.GetPlayers().Where(x => x.IsValid))
-			{
-				ClearMenuIfValidPlayer(p);
-			}
-			_wireMenu = null;
-		}
+		_wirePanel?.CloseAll();
 
 		return HookResult.Continue;
 	}
@@ -188,12 +186,12 @@ public class Plugin : BasePlugin, IPluginConfig<Config>
 		// Helper message
 		player.PrintToChat($"{Localizer.ForPlayer(player, "k4.general.prefix")} {Localizer.ForPlayer(player, planting ? "k4.menu.helper_t" : "k4.menu.helper_ct")}");
 
-		var wireOptions = new List<(WireColor color, string text)>
+		var wireOptions = new List<(WireColor color, string name)>
 		{
-			(WireColor.Red, $"<font color='#FF0000'>{Localizer.ForPlayer(player, "k4.menu.red")}</font>"),
-			(WireColor.Blue, $"<font color='#00BFFF'>{Localizer.ForPlayer(player, "k4.menu.blue")}</font>"),
-			(WireColor.Yellow, $"<font color='#FFFF00'>{Localizer.ForPlayer(player, "k4.menu.yellow")}</font>"),
-			(WireColor.Green, $"<font color='#00FF00'>{Localizer.ForPlayer(player, "k4.menu.green")}</font>")
+			(WireColor.Red, Localizer.ForPlayer(player, "k4.menu.red")),
+			(WireColor.Blue, Localizer.ForPlayer(player, "k4.menu.blue")),
+			(WireColor.Yellow, Localizer.ForPlayer(player, "k4.menu.yellow")),
+			(WireColor.Green, Localizer.ForPlayer(player, "k4.menu.green"))
 		};
 
 		if (Config.RandomizeWireOrder)
@@ -201,30 +199,14 @@ public class Plugin : BasePlugin, IPluginConfig<Config>
 			wireOptions = wireOptions.OrderBy(_ => Random.Shared.Next()).ToList();
 		}
 
-		_wireMenu = MenuManager.MenuByType(typeof(WasdMenu), Localizer.ForPlayer(player, "k4.menu.title"), this);
+		player.PrintToChat($"{Localizer.ForPlayer(player, "k4.general.prefix")} {Localizer.ForPlayer(player, "k4.chat.keys", wireOptions.Select(w => GetWireTranslation(w.color, player)).ToArray<object>())}");
 
-		foreach (var (color, text) in wireOptions)
-		{
-			_wireMenu.AddItem(text, (p, o) =>
-			{
-				HandleWireSelection(player, color, planting);
-			});
-		}
-
-		_wireMenu.WasdMenu_FreezePlayer = false;
-		// addons/counterstrikesharp/shared/CS2MenuManager/
-		// ForceConfigSettings --> false
-		_wireMenu.WasdMenu_SelectKey = "Space";
-		_wireMenu.Display(player, Config.MenuTimeout + 2);
-
-		// Auto-close menu after timeout
-		AddTimer(Config.MenuTimeout, () =>
-		{
-			if (!player.IsValid)
-				return;
-
-			ClearMenuIfValidPlayer(player);
-		});
+		_wirePanel?.Open(player,
+			Localizer.ForPlayer(player, "k4.menu.title"),
+			Localizer.ForPlayer(player, "k4.menu.hint"),
+			wireOptions,
+			Config.MenuTimeout,
+			(p, color) => HandleWireSelection(p, color, planting));
 	}
 
 	private void HandleWireSelection(CCSPlayerController player, WireColor selectedWire, bool planting)
@@ -289,9 +271,9 @@ public class Plugin : BasePlugin, IPluginConfig<Config>
 
 	private void ClearMenuIfValidPlayer(CCSPlayerController player)
 	{
-		if (player?.IsValid == true && !player.IsBot && _wireMenu != null)
+		if (player?.IsValid == true && !player.IsBot)
 		{
-			MenuManager.CloseActiveMenu(player);
+			_wirePanel?.Close(player);
 		}
 	}
 }

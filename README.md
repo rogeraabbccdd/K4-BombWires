@@ -39,7 +39,7 @@ To use this server addon, you'll need the following dependencies installed:
 
 - ~~[**SwiftlyS2**](https://github.com/swiftly-solution/swiftlys2): SwiftlyS2 is a server plugin framework for Counter-Strike 2~~
 - [**CounterStrikeSharp**](https://github.com/roflmuffin/CounterStrikeSharp/releases): CounterStrikeSharp allows you to write server plugins in C# for Counter-Strike 2/Source2/CS2.
-- [**CS2MenuManager**](https://github.com/schwarper/CS2MenuManager)
+- A workshop addon with the wire panel (optional, see [Workshop addon](#workshop-addon)), mounted with e.g. [MultiAddonManager](https://github.com/Source2ZE/MultiAddonManager). Without it, wires can still be picked with W/A/S/D + Jump; the key list is printed in chat.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -47,12 +47,17 @@ To use this server addon, you'll need the following dependencies installed:
 
 ## Installation
 
-1. Install [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp/releases) on your server
-2. Install [CS2MenuManager](https://github.com/schwarper/CS2MenuManager/releases) on your server
-3. [Download the latest release](https://github.com/rogeraabbccdd/K4-BombWires/releases/latest)
-4. Extract to your server's `counterstrikesharp/plugins/` directory
-5. Configure `counterstrikesharp/configs/plugins/K4-BombWires/K4-BombWires.json` (optional)
-6. Edit `counterstrikesharp/shared/CS2MenuManager/config.toml`, set `ForceConfigSettings = false` (optional)
+1. Install [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp/releases) 1.0.374+ on your server
+2. [Download the latest release](https://github.com/rogeraabbccdd/K4-BombWires/releases/latest)
+3. Extract to your server's `counterstrikesharp/plugins/` directory
+4. Configure `counterstrikesharp/configs/plugins/K4-BombWires/K4-BombWires.json` (optional)
+5. Set up the workshop addon (optional, below)
+
+### Workshop addon
+
+1. Copy the contents of [`addon/`](addon/) into `<CS2>/content/csgo_addons/<your addon>/`.
+2. Open the addon in the CS2 Workshop Tools; `bombwires.xml` and `bombwires.css` are compiled automatically.
+3. Publish the addon and mount it on the server. `PanoramaLayout` must point at the layout path inside the addon.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -74,10 +79,10 @@ To use this server addon, you'll need the following dependencies installed:
 ## How It Works
 
 1. **Terrorist plants bomb** → Wire selection menu appears
-2. **T selects a wire color** (Red, Blue, Yellow, or Green) or ignores for random
+2. **T presses W / A / S / D** to select and **Jump** to confirm a wire color (Red, Blue, Yellow, or Green) or ignores for random
 3. **Bomb is planted** with the selected/random wire
 4. **CT begins defusing** → Wire selection menu appears
-5. **CT guesses a wire color**:
+5. **CT presses W / A / S / D** to select and **Jump** to confirm a wire color:
    - ✅ **Correct**: Bomb instantly defused!
    - ❌ **Wrong**: Bomb instantly explodes!
 
@@ -93,7 +98,8 @@ To use this server addon, you'll need the following dependencies installed:
 {
   "K4BombWires": {
     "MenuTimeout": 5,
-    "RandomizeWireOrder": false
+    "RandomizeWireOrder": false,
+    "PanoramaLayout": "panorama/layout/custom_game/bombwires.xml"
   }
 }
 ```
@@ -102,6 +108,7 @@ To use this server addon, you'll need the following dependencies installed:
 | ------------- | ------------------------------------ | ------- |
 | `MenuTimeout` | Seconds before wire menu auto-closes | `5`     |
 | `RandomizeWireOrder` | If enabled, the order of wire colors in the menu will be randomized. | `false`     |
+| `PanoramaLayout` | Panel layout in the workshop addon. Empty = no panel (keys still work) | `panorama/layout/custom_game/bombwires.xml` |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

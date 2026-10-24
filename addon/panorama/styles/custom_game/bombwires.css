@@ -1,0 +1,115 @@
+/* Wire picker panel (compiled into the workshop addon with bombwires.xml). */
+
+.bw-root
+{
+	width: 100%;
+	height: 100%;
+}
+
+/* Hidden for everyone; the server adds bw-open per player */
+.bw-dialog
+{
+	visibility: collapse;
+	horizontal-align: center;
+	vertical-align: bottom;
+	margin-bottom: 220px;
+	flow-children: down;
+	padding: 14px 18px;
+	background-color: #10161de8;
+	border: 1px solid #5db2d1cc;
+	box-shadow: #000000aa 0px 0px 30px 0px;
+}
+
+.bw-dialog.bw-open
+{
+	visibility: visible;
+}
+
+.bw-header
+{
+	horizontal-align: center;
+	color: #d9aa45ff;
+	font-size: 22px;
+	font-weight: bold;
+	letter-spacing: 1px;
+	white-space: nowrap;
+}
+
+.bw-hint
+{
+	horizontal-align: center;
+	margin-bottom: 10px;
+	color: #eaf4f7cc;
+	font-size: 14px;
+	white-space: nowrap;
+}
+
+.bw-row
+{
+	horizontal-align: center;
+	flow-children: right;
+}
+
+.bw-wire
+{
+	width: 120px;
+	flow-children: down;
+	padding: 6px;
+	margin: 3px;
+	background-color: #20313d99;
+	border: 2px solid #78a7ba44;
+	opacity: 0.45;
+	transition-property: background-color, box-shadow, opacity;
+	transition-duration: 0.1s;
+}
+
+.bw-key
+{
+	horizontal-align: center;
+	width: 40px;
+	height: 40px;
+	color: #10161dff;
+	background-color: #eaf4f7ff;
+	font-size: 26px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.bw-name
+{
+	horizontal-align: center;
+	margin-top: 4px;
+	font-size: 18px;
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+/* Wire colors, set per player and per key */
+.bw-wire.bw-red { border: 2px solid #ff0000ff; }
+.bw-wire.bw-red .bw-key { background-color: #ff0000ff; }
+.bw-wire.bw-red .bw-name { color: #ff4040ff; }
+
+.bw-wire.bw-blue { border: 2px solid #00bfffff; }
+.bw-wire.bw-blue .bw-key { background-color: #00bfffff; }
+.bw-wire.bw-blue .bw-name { color: #00bfffff; }
+
+.bw-wire.bw-yellow { border: 2px solid #ffff00ff; }
+.bw-wire.bw-yellow .bw-key { background-color: #ffff00ff; }
+.bw-wire.bw-yellow .bw-name { color: #ffff00ff; }
+
+.bw-wire.bw-green { border: 2px solid #00ff00ff; }
+.bw-wire.bw-green .bw-key { background-color: #00ff00ff; }
+.bw-wire.bw-green .bw-name { color: #00ff00ff; }
+
+/* Wire highlighted with W/A/S/D, confirmed with Jump: lit in its own color, the others stay dim */
+.bw-wire.bw-selected
+{
+	opacity: 1;
+}
+
+/* Panorama draws box-shadow under the panel too, so the background must be opaque
+   (the wire color pre-mixed into the dark panel color) or the glow fills the whole card */
+.bw-wire.bw-red.bw-selected { background-color: #4c1116ff; box-shadow: #ff000099 0px 0px 10px 0px; }
+.bw-wire.bw-blue.bw-selected { background-color: #0c4055ff; box-shadow: #00bfff99 0px 0px 10px 0px; }
+.bw-wire.bw-yellow.bw-selected { background-color: #404517ff; box-shadow: #ffff0099 0px 0px 10px 0px; }
+.bw-wire.bw-green.bw-selected { background-color: #0d4517ff; box-shadow: #00ff0099 0px 0px 10px 0px; }

@@ -1,0 +1,21 @@
+<root>
+	<styles>
+		<include src="s2r://panorama/styles/custom_game/bombwires.vcss_c" />
+	</styles>
+	<!-- The custom HUD only accepts Panel/Label/Button with id, class, text and hittest. -->
+	<Panel class="bw-root" hittest="false">
+		<Panel id="bw_dialog" class="bw-dialog" hittest="false">
+			<Label id="bw_header" class="bw-header" text="{s:bw_header}" hittest="false" />
+			<Label id="bw_hint" class="bw-hint" text="{s:bw_hint}" hittest="false" />
+			<!-- Keyboard shaped: W on top, A S D below -->
+			<Panel class="bw-row" hittest="false">
+				<Button id="bw_wire_w" class="bw-wire"><Label class="bw-key" text="W" hittest="false" /><Label id="bw_name_w" class="bw-name" text="{s:bw_name_w}" hittest="false" /></Button>
+			</Panel>
+			<Panel class="bw-row" hittest="false">
+				<Button id="bw_wire_a" class="bw-wire"><Label class="bw-key" text="A" hittest="false" /><Label id="bw_name_a" class="bw-name" text="{s:bw_name_a}" hittest="false" /></Button>
+				<Button id="bw_wire_s" class="bw-wire"><Label class="bw-key" text="S" hittest="false" /><Label id="bw_name_s" class="bw-name" text="{s:bw_name_s}" hittest="false" /></Button>
+				<Button id="bw_wire_d" class="bw-wire"><Label class="bw-key" text="D" hittest="false" /><Label id="bw_name_d" class="bw-name" text="{s:bw_name_d}" hittest="false" /></Button>
+			</Panel>
+		</Panel>
+	</Panel>
+</root>
