@@ -67,6 +67,7 @@ public class Plugin : BasePlugin, IPluginConfig<Config>
 	{
 		RegisterEventHandler<EventRoundStart>(OnRoundStart, HookMode.Post);
 		RegisterEventHandler<EventRoundPrestart>(OnRoundPrestart, HookMode.Post);
+		RegisterEventHandler<EventRoundEnd>(OnRoundEnd, HookMode.Post);
 		RegisterEventHandler<EventBombBeginplant>(OnBombBeginPlant, HookMode.Post);
 		RegisterEventHandler<EventBombPlanted>(OnBombPlanted, HookMode.Post);
 		RegisterEventHandler<EventBombBegindefuse>(OnBombBeginDefuse, HookMode.Post);
@@ -97,6 +98,20 @@ public class Plugin : BasePlugin, IPluginConfig<Config>
 		return HookResult.Continue;
 	}
 
+	private HookResult OnRoundEnd(EventRoundEnd @event, GameEventInfo info)
+	{
+		if (_currentWire != WireColor.Max)
+		{
+			foreach (var p in Utilities.GetPlayers().Where(x => x.IsValid))
+			{
+				string correctWireName = GetWireTranslation(_currentWire, p);
+				p.PrintToChat($"{Localizer.ForPlayer(p, "k4.general.prefix")} {Localizer.ForPlayer(p, "k4.chat.round_end", correctWireName)}");
+			}
+		}
+		_currentWire = WireColor.Max;
+		return HookResult.Continue;
+	}
+
 	private HookResult OnBombBeginPlant(EventBombBeginplant @event, GameEventInfo info)
 	{
 		CCSPlayerController? player = @event.Userid;
@@ -117,6 +132,11 @@ public class Plugin : BasePlugin, IPluginConfig<Config>
 		if (_currentWire == WireColor.Max)
 		{
 			_currentWire = (WireColor)Random.Shared.Next(0, (int)WireColor.Max);
+			if (player != null)
+			{
+				string wireName = GetWireTranslation(_currentWire, player);
+				player.PrintToChat($"{Localizer.ForPlayer(player, "k4.general.prefix")} {Localizer.ForPlayer(player, "k4.chat.random", wireName)}");
+			}
 		}
 
 		return HookResult.Continue;
@@ -155,10 +175,11 @@ public class Plugin : BasePlugin, IPluginConfig<Config>
 
 	private HookResult OnPlantAborted(EventBombAbortplant @event, GameEventInfo info)
 	{
-		_currentWire = WireColor.Max;
-
 		CCSPlayerController? player = @event.Userid;
 		if (player != null) ClearMenuIfValidPlayer(player);
+		
+		_currentWire = WireColor.Max;
+		
 		return HookResult.Continue;
 	}
 
@@ -196,19 +217,13 @@ public class Plugin : BasePlugin, IPluginConfig<Config>
 		_wireMenu.WasdMenu_SelectKey = "Space";
 		_wireMenu.Display(player, Config.MenuTimeout + 2);
 
-		// Auto-close menu after timeout and select random if T didn't pick
+		// Auto-close menu after timeout
 		AddTimer(Config.MenuTimeout, () =>
 		{
 			if (!player.IsValid)
 				return;
 
 			ClearMenuIfValidPlayer(player);
-
-			// If T closed without selecting, pick random
-			if (planting && _currentWire == WireColor.Max)
-			{
-				_currentWire = (WireColor)Random.Shared.Next(0, (int)WireColor.Max);
-			}
 		});
 	}
 
@@ -237,8 +252,9 @@ public class Plugin : BasePlugin, IPluginConfig<Config>
 				// Correct! Instant defuse
 				foreach (var p in Utilities.GetPlayers().Where(x => x.IsValid))
 				{
-					string wireName = GetWireTranslation(selectedWire, player);
-					p.PrintToChat($"{Localizer.ForPlayer(p, "k4.general.prefix")} {Localizer.ForPlayer(p, "k4.chat.success", playerName, wireName)}");
+					string wireName = GetWireTranslation(selectedWire, p);
+					string correctWireName = GetWireTranslation(_currentWire, p);
+					p.PrintToChat($"{Localizer.ForPlayer(p, "k4.general.prefix")} {Localizer.ForPlayer(p, "k4.chat.success", playerName, wireName, correctWireName)}");
 				}
 
 				bomb.DefuseCountDown = 0;
@@ -248,11 +264,14 @@ public class Plugin : BasePlugin, IPluginConfig<Config>
 				// Wrong! Instant explosion
 				foreach (var p in Utilities.GetPlayers().Where(x => x.IsValid))
 				{
-					string wireName = GetWireTranslation(selectedWire, player);
-					p.PrintToChat($"{Localizer.ForPlayer(p, "k4.general.prefix")} {Localizer.ForPlayer(p, "k4.chat.failure", playerName, wireName)}");
+					string wireName = GetWireTranslation(selectedWire, p);
+					string correctWireName = GetWireTranslation(_currentWire, p);
+					p.PrintToChat($"{Localizer.ForPlayer(p, "k4.general.prefix")} {Localizer.ForPlayer(p, "k4.chat.failure", playerName, wireName, correctWireName)}");
 				}
 				bomb.C4Blow = 1.0f;
 			}
+
+			_currentWire = WireColor.Max;
 		}
 	}
 

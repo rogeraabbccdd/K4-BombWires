@@ -7,7 +7,9 @@
 	"k4.menu.blue": "Blue",
 	"k4.menu.yellow": "Yellow",
 	"k4.menu.green": "Green",
-	"k4.chat.success": "{0} {lime}has cut the {1} {lime}wire, which is correct! The bomb has been defused instantly.",
+	"k4.chat.success": "{0} {lime}has cut the {1} {lime}wire, which is correct! The bomb has been defused instantly. Correct: {2}",
 	"k4.chat.failure": "{0} {lightred}has cut the {1} {lightred}wire, which is incorrect! The bomb has exploded.",
+	"k4.chat.random": "{silver}Randomly selected {0} {silver}wire",
+	"k4.chat.round_end": "{silver} The correct wire in this round was {0}{silver}.",
 	"k4.chat.select": "{silver}You have selected the {0} {silver}wire."
 }

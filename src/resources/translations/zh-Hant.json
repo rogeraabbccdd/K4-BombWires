@@ -8,6 +8,8 @@
   "k4.menu.yellow": "黃色",
   "k4.menu.green": "綠色",
   "k4.chat.success": "{0} {lime}剪斷了 {1} {lime}線，答案正確！炸彈已立即拆除。",
-  "k4.chat.failure": "{0} {lightred}剪斷了 {1} {lightred}線，答案錯誤！炸彈爆炸了。",
+  "k4.chat.failure": "{0} {lightred}剪斷了 {1} {lightred}線，答案錯誤！炸彈爆炸了。正確答案: {2}",
+  "k4.chat.random": "{silver}隨機選擇了 {0} {silver}線",
+  "k4.chat.round_end": "{silver}這回合的正確電線顏色是 {0}",
   "k4.chat.select": "{silver}你選擇了 {0} {silver}線。"
 }
